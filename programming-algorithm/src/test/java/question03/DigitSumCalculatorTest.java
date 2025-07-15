@@ -54,7 +54,7 @@ public class DigitSumCalculatorTest {
     @DisplayName("Test large numbers")
     public void testLargeNumbers() {
         // Test with repeated 9s
-        assertEquals(45, DigitSumCalculator.sumOfDigits("999999999")); // 9*5 = 45
+        assertEquals(81, DigitSumCalculator.sumOfDigits("999999999")); // 9*9 = 81 (9 nines)
 
         // Test maximum constraint length (100 characters)
         String hundredNines = "9".repeat(100);
@@ -122,9 +122,8 @@ public class DigitSumCalculatorTest {
         // Test cases where we know the digital root
         assertEquals(1, DigitSumCalculator.digitalRootRecursive("19")); // 1+9=10, 1+0=1
         assertEquals(2, DigitSumCalculator.digitalRootRecursive("38")); // 3+8=11, 1+1=2
-        assertEquals(3, DigitSumCalculator.digitalRootRecursive("999")); // 9+9+9=27, 2+7=9... wait, let me recalculate
 
-        // Let me verify: 999 -> 9+9+9 = 27 -> 2+7 = 9
+        // Test 999: 9+9+9 = 27 -> 2+7 = 9
         assertEquals(9, DigitSumCalculator.digitalRootRecursive("999"));
 
         // Test 123: 1+2+3 = 6
