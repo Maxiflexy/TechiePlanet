@@ -1,9 +1,12 @@
+package question01;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit Tests for TimeInWords class
+ * Unit Tests for question01.TimeInWords class
  * Tests edge cases, normal cases, and error conditions
  */
 public class TimeInWordsTest {

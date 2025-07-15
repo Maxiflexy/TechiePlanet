@@ -1,9 +1,11 @@
+package question02;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit Tests for DuplicateRemover class
+ * Unit Tests for question02.DuplicateRemover class
  * Tests various scenarios including edge cases and the sample input
  */
 public class DuplicateRemoverTest {

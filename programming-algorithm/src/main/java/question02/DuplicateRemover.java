@@ -1,3 +1,5 @@
+package question02;
+
 /**
  * Question 2: Remove Duplicates from Multidimensional Array
  */
