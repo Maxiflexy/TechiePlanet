@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: student-scoring-postgres
+    environment:
+      POSTGRES_DB: student_scoring_db
+      POSTGRES_USER: student_user
+      POSTGRES_PASSWORD: student_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - student-scoring-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U student_user -d student_scoring_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  app:
+    build: .
+    container_name: student-scoring-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - DB_HOST=postgres
+      - DB_PORT=5433
+      - DB_NAME=student_scoring_db
+      - DB_USER=student_user
+      - DB_PASSWORD=student_password
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - student-scoring-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/student-scoring/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data:
+
+networks:
+  student-scoring-network:
+    driver: bridge
