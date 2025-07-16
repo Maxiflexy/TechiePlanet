@@ -1,10 +1,8 @@
-FROM openjdk:21-jdk-slim
+FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
-
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+COPY target/student-scoring-system-*.jar app.jar
 
 EXPOSE 8080
 

@@ -2,56 +2,51 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: student-scoring-postgres
     environment:
-      POSTGRES_DB: student_scoring_db
-      POSTGRES_USER: student_user
-      POSTGRES_PASSWORD: student_password
+      POSTGRES_DB: studentscoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-scripts:/docker-entrypoint-initdb.d
-    networks:
-      - student-scoring-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U student_user -d student_scoring_db"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
-  app:
-    build: .
-    container_name: student-scoring-app
-    depends_on:
-      postgres:
-        condition: service_healthy
+  # pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: student-scoring-pgadmin
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - DB_HOST=postgres
-      - DB_PORT=5433
-      - DB_NAME=student_scoring_db
-      - DB_USER=student_user
-      - DB_PASSWORD=student_password
+      PGADMIN_DEFAULT_EMAIL: admin@studentscoringapp.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8080:8080"
+      - "8081:80"
+    depends_on:
+      - postgres
     volumes:
-      - ./logs:/app/logs
-    networks:
-      - student-scoring-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/student-scoring/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+      - pgadmin_data:/var/lib/pgadmin
+
+  # Spring Boot Application
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: student-scoring-app
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/studentscoring
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: password
+#      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - postgres
 
 volumes:
   postgres_data:
+  pgadmin_data:
 
 networks:
-  student-scoring-network:
+  default:
     driver: bridge
